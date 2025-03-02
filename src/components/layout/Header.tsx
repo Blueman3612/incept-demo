@@ -32,7 +32,7 @@ const Header: React.FC = () => {
               Home
             </Link>
             <Link 
-              href="/course" 
+              href="/course/lesson/reading-fundamentals/fluency" 
               className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                 pathname === '/course' || pathname.startsWith('/course/') 
                   ? 'bg-blue-50 text-blue-600' 

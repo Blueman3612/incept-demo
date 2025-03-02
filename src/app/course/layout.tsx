@@ -11,8 +11,10 @@ export default function CourseLayout({
     <Layout>
       <div className="flex min-h-screen">
         <Sidebar />
-        <div className="flex-1 p-6">
-          {children}
+        <div className="flex-1 p-6 overflow-y-auto">
+          <div className="max-w-4xl mx-auto">
+            {children}
+          </div>
         </div>
       </div>
     </Layout>

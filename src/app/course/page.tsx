@@ -1,45 +1,23 @@
-import React from 'react';
-import Link from 'next/link';
-import Button from '@/components/ui/Button';
+"use client";
+
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function CoursePage() {
-  return (
-    <div className="space-y-8">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Educational Content Course</h1>
-        <p className="mt-2 text-lg text-gray-600">
-          Explore our interactive lessons and question generation tools
-        </p>
-      </div>
+  const router = useRouter();
+  
+  useEffect(() => {
+    // Redirect to the first lesson (Reading Fluency)
+    router.push('/course/lesson/reading-fundamentals/fluency');
+  }, [router]);
 
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-        <div className="prose max-w-none">
-          <h2 className="text-2xl font-semibold mb-4">Welcome to the Educational Content Course</h2>
-          <p className="mb-4">
-            This course showcases our educational content generation API. Select a lesson category from 
-            the sidebar to view content for that specific lesson.
-          </p>
-          <p className="mb-4">
-            For each lesson, you'll be able to:
-          </p>
-          <ul className="list-disc pl-5 mb-4">
-            <li>Read the lesson article</li>
-            <li>Get pre-generated questions related to the lesson</li>
-            <li>Generate new custom questions on the fly</li>
-          </ul>
-          <p className="mb-6">
-            This interactive course helps you explore how our API can generate relevant, 
-            educational content across various reading and language topics.
-          </p>
-          
-          <div className="mt-8 flex justify-center">
-            <Link href="/course/lesson">
-              <Button variant="primary" size="lg">
-                Browse Lessons
-              </Button>
-            </Link>
-          </div>
+  return (
+    <div className="flex items-center justify-center min-h-[50vh]">
+      <div className="text-center">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+          <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
         </div>
+        <p className="mt-4 text-lg text-gray-600">Redirecting to course content...</p>
       </div>
     </div>
   );
