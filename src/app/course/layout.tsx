@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '@/components/layout/Layout';
 import Sidebar from '@/components/layout/Sidebar';
 
-export default function DemoLayout({
+export default function CourseLayout({
   children,
 }: {
   children: React.ReactNode;
