@@ -1,6 +1,7 @@
 import { apiClient } from './apiClient';
 import { ApiResponse, GenerateParams, GradeParams, TagParams } from '@/types/Api';
 import { Article, GeneratedArticle, GradedArticle, TaggedArticle } from '@/types/Article';
+import { supabase } from '@/lib/supabase'
 
 class ArticleService {
   /**
@@ -68,4 +69,89 @@ Our Solar System is just one tiny part of the vast Milky Way galaxy, which conta
 }
 
 export const articleService = new ArticleService();
-export default ArticleService; 
+export default ArticleService;
+
+export interface SupabaseArticle {
+  id: string
+  title: string
+  content: string
+  lesson: string
+  standard: string | null
+  subject: string
+  grade: number
+  status: string
+  quality_score: number | null
+  feedback: string | null
+  created_at: string
+  updated_at: string
+}
+
+export async function listAllArticles(): Promise<SupabaseArticle[] | null> {
+  try {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*');
+
+    if (error) {
+      console.error('Error fetching articles:', error);
+      return null;
+    }
+
+    console.log('All articles:', data);
+    return data;
+  } catch (err) {
+    console.error('Error in listAllArticles:', err);
+    return null;
+  }
+}
+
+export async function getArticleByLessonId(lessonId: string): Promise<SupabaseArticle | null> {
+  try {
+    console.log('Fetching article for lesson:', lessonId);
+    
+    // First, let's list all articles to see what we have
+    await listAllArticles();
+    
+    const { data, error } = await supabase
+      .from('articles')
+      .select(`
+        id,
+        title,
+        content,
+        lesson,
+        standard,
+        subject,
+        grade,
+        status,
+        quality_score,
+        feedback,
+        created_at,
+        updated_at
+      `)
+      .eq('lesson', lessonId)
+      .single();
+
+    if (error) {
+      // Handle the "no rows found" case gracefully
+      if (error.code === 'PGRST116') {
+        console.log(`No article found for lesson: ${lessonId}`);
+        return null;
+      }
+      
+      // Log other errors as they might be actual issues
+      console.error('Supabase error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
+      throw error;
+    }
+
+    console.log('Article data received:', data);
+    return data;
+  } catch (err) {
+    console.error('Error in getArticleByLessonId:', err);
+    return null;
+  }
+} 

@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@/components/ui/Button';
+import { getArticleByLessonId } from '@/services/articleService';
 
 // In a real app, this would be fetched from a database
 const getLessonData = (category: string, slug: string) => {
@@ -43,23 +44,6 @@ const getLessonData = (category: string, slug: string) => {
   return {
     title,
     subtitle,
-    content: `
-      <h2>This is a placeholder for ${title}</h2>
-      <p>
-        This is where the content for the ${title} lesson would be displayed. In a real implementation,
-        this content would be fetched from your database based on the category "${category}" and slug "${slug}".
-      </p>
-      <h3>Key Learning Objectives</h3>
-      <ul>
-        <li>Understand the fundamentals of ${title}</li>
-        <li>Apply concepts in practical scenarios</li>
-        <li>Build skills for advanced topics</li>
-      </ul>
-      <p>
-        The content would include detailed explanations, examples, and interactive elements
-        specific to this lesson topic.
-      </p>
-    `
   };
 };
 
@@ -73,32 +57,58 @@ interface PageProps {
 export default async function LessonPage({ params }: PageProps) {
   // Await the params object before using it
   const { category, slug } = await params;
+  console.log('Route params:', { category, slug });
+  
   const lessonData = getLessonData(category, slug);
+  console.log('Lesson data:', lessonData);
+  
+  // Use the actual lesson title instead of generating an ID
+  const lessonTitle = lessonData.title;
+  console.log('Looking up lesson by title:', lessonTitle);
+  
+  try {
+    // Fetch the article from Supabase using the lesson title
+    const article = await getArticleByLessonId(lessonTitle);
+    console.log('Article fetch result:', article);
 
-  return (
-    <div className="space-y-8">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">{lessonData.title}</h1>
-        <p className="mt-2 text-lg text-gray-600">
-          {lessonData.subtitle}
-        </p>
-      </div>
+    return (
+      <div className="space-y-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">{lessonData.title}</h1>
+          <p className="mt-2 text-lg text-gray-600">
+            {lessonData.subtitle}
+          </p>
+        </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-        <div 
-          className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: lessonData.content }}
-        />
-      </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+          {article ? (
+            <div 
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: article.content }}
+            />
+          ) : (
+            <div className="text-center text-gray-500">
+              <p>No article content available for this lesson yet.</p>
+            </div>
+          )}
+        </div>
 
-      <div className="flex space-x-4 mt-6">
-        <Button variant="primary">
-          Get Question
-        </Button>
-        <Button variant="outline">
-          Generate Question
-        </Button>
+        <div className="flex space-x-4 mt-6">
+          <Button variant="primary">
+            Get Question
+          </Button>
+          <Button variant="outline">
+            Generate Question
+          </Button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error('Error in lesson page:', error);
+    return (
+      <div className="text-center text-red-500">
+        <p>Error loading lesson content. Please try again later.</p>
+      </div>
+    );
+  }
 } 
