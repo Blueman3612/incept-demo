@@ -63,8 +63,16 @@ const getLessonData = (category: string, slug: string) => {
   };
 };
 
-export default function LessonPage({ params }: { params: { category: string; slug: string } }) {
-  const { category, slug } = params;
+interface PageProps {
+  params: Promise<{
+    category: string;
+    slug: string;
+  }>;
+}
+
+export default async function LessonPage({ params }: PageProps) {
+  // Await the params object before using it
+  const { category, slug } = await params;
   const lessonData = getLessonData(category, slug);
 
   return (
