@@ -48,7 +48,9 @@ const Header: React.FC = () => {
           
           <div className="flex items-center space-x-4">
             <a 
-              href="#api-section" 
+              href="http://ec2-3-12-102-103.us-east-2.compute.amazonaws.com/docs#/" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
               aria-label="API Docs"
             >

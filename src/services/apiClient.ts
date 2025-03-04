@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ApiResponse } from '@/types/Api';
 
 // Default API URL - in a real app, this would come from environment variables
-const API_URL = 'https://api.educationalcontent.example';
+const API_URL = 'http://ec2-3-12-102-103.us-east-2.compute.amazonaws.com';
 
 class ApiClient {
   private client: AxiosInstance;
