@@ -66,58 +66,60 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   const showWrongAnswerExplanation = selectedAnswer !== null && !isCorrect && wrongAnswerExplanations?.[selectedAnswer];
 
   return (
-    <Card
-      title={subject ? `Question: ${subject}` : 'Question'}
-      className={`${className}`}
-      headerActions={renderDifficultyBadge()}
-    >
-      <div className="space-y-4">
-        <div className="whitespace-pre-wrap text-gray-800 font-medium">{text}</div>
+    <div id="practice-question">
+      <Card
+        title={subject ? `Question: ${subject}` : 'Question'}
+        className={`${className}`}
+        headerActions={renderDifficultyBadge()}
+      >
+        <div className="space-y-4">
+          <div className="whitespace-pre-wrap text-gray-800 font-medium">{text}</div>
 
-        {options && options.length > 0 && (
-          <div className="space-y-2">
-            {options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => onSelectAnswer?.(index)}
-                disabled={showAnswer || selectedAnswer !== null}
-                className={`w-full p-3 rounded-md transition-colors ${
-                  showAnswer || selectedAnswer !== null
-                    ? selectedAnswer === index
-                      ? isCorrect
+          {options && options.length > 0 && (
+            <div className="space-y-2">
+              {options.map((option, index) => (
+                <button
+                  key={index}
+                  onClick={() => onSelectAnswer?.(index)}
+                  disabled={showAnswer || selectedAnswer !== null}
+                  className={`w-full p-3 rounded-md transition-colors ${
+                    showAnswer || selectedAnswer !== null
+                      ? selectedAnswer === index
+                        ? isCorrect
+                          ? 'bg-green-50 border border-green-200 text-green-800'
+                          : 'bg-red-50 border border-red-200 text-red-800'
+                        : correctOption === index && showAnswer
                         ? 'bg-green-50 border border-green-200 text-green-800'
-                        : 'bg-red-50 border border-red-200 text-red-800'
-                      : correctOption === index && showAnswer
-                      ? 'bg-green-50 border border-green-200 text-green-800'
-                      : 'bg-gray-50 border border-gray-200 text-gray-700'
-                    : 'bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:border-blue-200 text-gray-700 cursor-pointer'
-                }`}
-              >
-                <div className="flex items-start">
-                  <span className="font-semibold mr-2">{String.fromCharCode(65 + index)}.</span>
-                  <span className="text-left font-medium">{option}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
+                        : 'bg-gray-50 border border-gray-200 text-gray-700'
+                      : 'bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:border-blue-200 text-gray-700 cursor-pointer'
+                  }`}
+                >
+                  <div className="flex items-start">
+                    <span className="font-semibold mr-2">{String.fromCharCode(65 + index)}.</span>
+                    <span className="text-left font-medium">{option}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
 
-        {showWrongAnswerExplanation && (
-          <div className="p-4 bg-red-50 border border-red-100 rounded-md">
-            <p className="text-red-700">{wrongAnswerExplanations[selectedAnswer]}</p>
-          </div>
-        )}
+          {showWrongAnswerExplanation && (
+            <div className="p-4 bg-red-50 border border-red-100 rounded-md">
+              <p className="text-red-700">{wrongAnswerExplanations[selectedAnswer]}</p>
+            </div>
+          )}
 
-        {selectedAnswer !== null && !isCorrect && explanation && (
-          <div className="p-4 bg-blue-50 border border-blue-100 rounded-md">
-            <h4 className="text-sm font-medium text-blue-800 mb-1">Solution:</h4>
-            <p className="text-blue-700">{explanation}</p>
-          </div>
-        )}
+          {selectedAnswer !== null && !isCorrect && explanation && (
+            <div className="p-4 bg-blue-50 border border-blue-100 rounded-md">
+              <h4 className="text-sm font-medium text-blue-800 mb-1">Solution:</h4>
+              <p className="text-blue-700">{explanation}</p>
+            </div>
+          )}
 
-        {renderTags()}
-      </div>
-    </Card>
+          {renderTags()}
+        </div>
+      </Card>
+    </div>
   );
 };
 
