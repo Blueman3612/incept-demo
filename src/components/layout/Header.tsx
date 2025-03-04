@@ -60,7 +60,7 @@ const Header: React.FC = () => {
               <span className="ml-2">API Docs</span>
             </a>
             <a 
-              href="https://github.com/yourusername/educational-content-api-demo" 
+              href="https://github.com/Blueman3612/incept" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
