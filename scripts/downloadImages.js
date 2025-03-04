@@ -1,104 +1,67 @@
-const fs = require('fs').promises;
+const https = require('https');
+const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
-require('dotenv').config();
 
-// Function to extract image descriptions from markdown content
-function extractImageDescriptions(content) {
-  const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
-  const matches = [...content.matchAll(imageRegex)];
-  return matches.map(match => match[1]).filter(desc => desc && desc !== '');
-}
+// Add any static images that need to be downloaded
+const images = [
+  {
+    url: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1332&q=80',
+    filename: 'hero-image.jpg',
+    description: 'Students learning with digital content'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1466&q=80',
+    filename: 'language-study.jpg',
+    description: 'Student studying language concepts'
+  }
+];
 
-// Get the API key from environment variables
-const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
-
-if (!UNSPLASH_ACCESS_KEY) {
-  console.error('Error: UNSPLASH_ACCESS_KEY not found in environment variables');
-  process.exit(1);
-}
-
-async function downloadImage(description) {
-  try {
-    // Create a filename from the description
-    const filename = description
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-
-    const outputDir = path.join(process.cwd(), 'public', 'images', 'content');
-    const outputPath = path.join(outputDir, `${filename}.jpg`);
-
-    // Create directory if it doesn't exist
-    await fs.mkdir(outputDir, { recursive: true });
-
-    // First, search for an image
-    const searchResponse = await axios.get('https://api.unsplash.com/search/photos', {
-      headers: {
-        'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`
-      },
-      params: {
-        query: description,
-        orientation: 'landscape',
-        per_page: 1
-      }
-    });
-
-    if (!searchResponse.data.results.length) {
-      throw new Error('No images found for this description');
+async function downloadImage(url, filename) {
+  return new Promise((resolve, reject) => {
+    const filepath = path.join(process.cwd(), 'public', 'images', filename);
+    const dir = path.dirname(filepath);
+    
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
     }
 
-    // Get the image URL
-    const imageUrl = searchResponse.data.results[0].urls.regular;
-    
-    console.log(`Downloading image for: ${description}`);
-    const imageResponse = await axios.get(imageUrl, {
-      responseType: 'arraybuffer'
-    });
+    https.get(url, response => {
+      if (response.statusCode !== 200) {
+        reject(new Error(`Failed to download image: ${response.statusCode}`));
+        return;
+      }
 
-    // Save the image
-    await fs.writeFile(outputPath, imageResponse.data);
-    
-    console.log(`Successfully downloaded: ${filename}.jpg`);
-    return `/images/content/${filename}.jpg`;
-  } catch (error) {
-    console.error(`Error downloading image for "${description}":`, error.message);
-    return null;
-  }
+      const file = fs.createWriteStream(filepath);
+      response.pipe(file);
+      
+      file.on('finish', () => {
+        file.close();
+        console.log(`Downloaded ${filename}`);
+        resolve();
+      });
+
+      file.on('error', err => {
+        fs.unlink(filepath, () => {});
+        reject(err);
+      });
+    }).on('error', err => {
+      reject(err);
+    });
+  });
 }
 
 async function downloadAllImages() {
+  console.log('Starting image downloads...');
+  
   try {
-    console.log('Reading articles.json...');
-    const articlesData = await fs.readFile('articles.json', 'utf8');
-    const articles = JSON.parse(articlesData);
-    
-    console.log('Extracting image descriptions from articles...');
-    const allDescriptions = new Set();
-    articles.forEach(article => {
-      const descriptions = extractImageDescriptions(article.content);
-      descriptions.forEach(desc => allDescriptions.add(desc));
-    });
-    
-    console.log(`Found ${allDescriptions.size} unique image descriptions`);
-    console.log('Starting image downloads...');
-    
-    const results = await Promise.all(
-      Array.from(allDescriptions).map(desc => downloadImage(desc))
-    );
-    
-    console.log('\nDownload summary:');
-    Array.from(allDescriptions).forEach((desc, index) => {
-      if (results[index]) {
-        console.log(`✓ ${desc}`);
-      } else {
-        console.log(`✗ Failed: ${desc}`);
-      }
-    });
+    for (const image of images) {
+      await downloadImage(image.url, image.filename);
+    }
+    console.log('All images downloaded successfully!');
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error downloading images:', error);
+    process.exit(1);
   }
 }
 
-// Run the script
-downloadAllImages().catch(console.error); 
+downloadAllImages(); 
