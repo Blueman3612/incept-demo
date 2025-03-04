@@ -31,7 +31,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ content, title }) => {
         // Check if this is an image
         const imageMatch = p.match(/!\[(.*?)\]\((.*?)\)/);
         if (imageMatch) {
-          const [_, altText, imagePath] = imageMatch;
+          const [, altText, imagePath] = imageMatch;
           return (
             <div key={`img-${index}-${pIndex}`} className="my-6 flex justify-center">
               <div className="relative w-full max-w-2xl h-[300px]">
@@ -80,7 +80,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ content, title }) => {
     return parts.map((part, index) => {
       const imageMatch = part.match(/!\[(.*?)\]\((.*?)\)/);
       if (imageMatch) {
-        const [_, altText, imagePath] = imageMatch;
+        const [, altText, imagePath] = imageMatch;
         return (
           <span key={index} className="inline-block mx-2">
             <Image

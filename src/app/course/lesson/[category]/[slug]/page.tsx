@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '@/components/ui/Button';
 import { getArticleByLessonId } from '@/services/articleService';
 import ArticleContent from '@/components/articles/ArticleContent';
 import LessonQuestion from '@/components/questions/LessonQuestion';

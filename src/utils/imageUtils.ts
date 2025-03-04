@@ -39,7 +39,7 @@ export async function processArticleContent(content: string): Promise<string> {
       for (const paragraph of paragraphs) {
         const imageMatch = paragraph.match(/!\[(.*?)\]\((.*?)\)/);
         if (imageMatch) {
-          const [fullMatch, altText] = imageMatch;
+          const [, altText] = imageMatch;
           // Get the path for the pre-downloaded image
           const imagePath = getImagePath(altText);
           
