@@ -141,7 +141,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ content, title }) => {
           style={{ objectFit: 'cover', objectPosition: 'center' }}
           priority
           onError={(e) => {
-            // @ts-ignore - TypeScript doesn't know about the src property on event target
+            // @ts-expect-error - Next.js Image onError event type is incomplete
             e.target.src = '/images/reading-fluency.jpg';
           }}
         />
