@@ -10,6 +10,7 @@ export interface Article {
   gradeScore?: number;
   gradeFeedback?: string;
   summary?: string;
+  lesson?: string;
 }
 
 export interface GeneratedArticle {

@@ -1,6 +1,8 @@
 import React from 'react';
 import Button from '@/components/ui/Button';
 import { getArticleByLessonId } from '@/services/articleService';
+import ArticleContent from '@/components/articles/ArticleContent';
+import LessonQuestion from '@/components/questions/LessonQuestion';
 
 // In a real app, this would be fetched from a database
 const getLessonData = (category: string, slug: string) => {
@@ -55,58 +57,40 @@ interface PageProps {
 }
 
 export default async function LessonPage({ params }: PageProps) {
-  // Await the params object before using it
   const { category, slug } = await params;
-  console.log('Route params:', { category, slug });
-  
   const lessonData = getLessonData(category, slug);
-  console.log('Lesson data:', lessonData);
-  
-  // Use the actual lesson title instead of generating an ID
   const lessonTitle = lessonData.title;
-  console.log('Looking up lesson by title:', lessonTitle);
   
   try {
-    // Fetch the article from Supabase using the lesson title
     const article = await getArticleByLessonId(lessonTitle);
-    console.log('Article fetch result:', article);
 
     return (
-      <div className="space-y-8">
+      <div className="max-w-5xl mx-auto px-2 sm:px-4">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{lessonData.title}</h1>
-          <p className="mt-2 text-lg text-gray-600">
-            {lessonData.subtitle}
-          </p>
+          <h1 className="text-4xl font-bold text-gray-900">
+            {article ? article.title : lessonData.title}
+          </h1>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-          {article ? (
-            <div 
-              className="prose max-w-none"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+        {article ? (
+          <>
+            <ArticleContent 
+              content={article.content}
+              title={lessonTitle}
             />
-          ) : (
-            <div className="text-center text-gray-500">
-              <p>No article content available for this lesson yet.</p>
-            </div>
-          )}
-        </div>
-
-        <div className="flex space-x-4 mt-6">
-          <Button variant="primary">
-            Get Question
-          </Button>
-          <Button variant="outline">
-            Generate Question
-          </Button>
-        </div>
+            <LessonQuestion lessonId={lessonTitle} />
+          </>
+        ) : (
+          <div className="text-center p-8 text-gray-500 bg-white rounded-xl border border-gray-200">
+            <p>No article content available for this lesson yet.</p>
+          </div>
+        )}
       </div>
     );
   } catch (error) {
     console.error('Error in lesson page:', error);
     return (
-      <div className="text-center text-red-500">
+      <div className="text-center text-red-500 p-8">
         <p>Error loading lesson content. Please try again later.</p>
       </div>
     );

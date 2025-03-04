@@ -6,14 +6,17 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "download-images": "node scripts/downloadImages.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
     "axios": "^1.8.1",
+    "dotenv": "^16.4.5",
     "next": "15.2.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "node-fetch": "^2.6.9"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

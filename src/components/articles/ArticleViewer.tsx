@@ -1,6 +1,7 @@
 import React from 'react';
 import { Article } from '@/types/Article';
 import Card from '@/components/ui/Card';
+import LessonQuestion from '@/components/questions/LessonQuestion';
 
 interface ArticleViewerProps {
   article: Article;
@@ -19,6 +20,8 @@ const ArticleViewer: React.FC<ArticleViewerProps> = ({
     topic,
     tags,
     summary,
+    lesson,
+    id,
   } = article;
 
   // Function to render metadata badges
@@ -71,35 +74,39 @@ const ArticleViewer: React.FC<ArticleViewerProps> = ({
   };
 
   return (
-    <Card
-      title={title}
-      className={`${className}`}
-      headerActions={renderDifficultyBadge()}
-    >
-      <div className="space-y-4">
-        {summary && (
-          <div className="p-4 bg-blue-50 border border-blue-100 rounded-md mb-4">
-            <h4 className="text-sm font-medium text-blue-800 mb-1">Summary:</h4>
-            <p className="text-sm text-blue-700">{summary}</p>
+    <div className="space-y-8">
+      <Card
+        title={lesson || title}
+        className={`${className}`}
+        headerActions={renderDifficultyBadge()}
+      >
+        <div className="space-y-4">
+          {summary && (
+            <div className="p-4 bg-blue-50 border border-blue-100 rounded-md mb-4">
+              <h4 className="text-sm font-medium text-blue-800 mb-1">Summary:</h4>
+              <p className="text-sm text-blue-700">{summary}</p>
+            </div>
+          )}
+          
+          <div className="flex flex-wrap">
+            {renderMetadataBadge('Subject', subject)}
+            {renderMetadataBadge('Topic', topic)}
           </div>
-        )}
-        
-        <div className="flex flex-wrap">
-          {renderMetadataBadge('Subject', subject)}
-          {renderMetadataBadge('Topic', topic)}
-        </div>
 
-        <div className="article-content mt-4 prose max-w-none">
-          {content.split('\n\n').map((paragraph, idx) => (
-            <p key={idx} className="mb-4 text-gray-700">
-              {paragraph}
-            </p>
-          ))}
-        </div>
+          <div className="article-content mt-4 prose max-w-none">
+            {content.split('\n\n').map((paragraph, idx) => (
+              <p key={idx} className="mb-4 text-gray-700">
+                {paragraph}
+              </p>
+            ))}
+          </div>
 
-        {renderTags()}
-      </div>
-    </Card>
+          {renderTags()}
+        </div>
+      </Card>
+
+      {id && <LessonQuestion lessonId={id} />}
+    </div>
   );
 };
 

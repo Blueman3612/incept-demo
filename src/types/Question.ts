@@ -4,7 +4,8 @@ export interface Question {
   options?: string[];
   correctOption?: number;
   explanation?: string;
-  difficulty?: 'easy' | 'medium' | 'hard';
+  wrongAnswerExplanations?: string[];
+  difficulty?: string;
   subject?: string;
   topic?: string;
   ageGroup?: 'elementary' | 'middle' | 'high' | 'college';

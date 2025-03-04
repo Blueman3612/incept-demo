@@ -1,7 +1,8 @@
 import { apiClient } from './apiClient';
 import { ApiResponse, GenerateParams, GradeParams, TagParams } from '@/types/Api';
 import { Article, GeneratedArticle, GradedArticle, TaggedArticle } from '@/types/Article';
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase';
+import { processArticleContent } from '@/utils/imageUtils';
 
 class ArticleService {
   /**
@@ -109,9 +110,6 @@ export async function getArticleByLessonId(lessonId: string): Promise<SupabaseAr
   try {
     console.log('Fetching article for lesson:', lessonId);
     
-    // First, let's list all articles to see what we have
-    await listAllArticles();
-    
     const { data, error } = await supabase
       .from('articles')
       .select(`
@@ -132,13 +130,10 @@ export async function getArticleByLessonId(lessonId: string): Promise<SupabaseAr
       .single();
 
     if (error) {
-      // Handle the "no rows found" case gracefully
       if (error.code === 'PGRST116') {
         console.log(`No article found for lesson: ${lessonId}`);
         return null;
       }
-      
-      // Log other errors as they might be actual issues
       console.error('Supabase error details:', {
         message: error.message,
         code: error.code,
@@ -148,10 +143,49 @@ export async function getArticleByLessonId(lessonId: string): Promise<SupabaseAr
       throw error;
     }
 
+    if (data) {
+      // Process any images in the content using the imageUtils function
+      data.content = await processArticleContent(data.content);
+    }
+
     console.log('Article data received:', data);
     return data;
   } catch (err) {
     console.error('Error in getArticleByLessonId:', err);
+    return null;
+  }
+}
+
+export async function updateArticle(lessonId: string, content: string): Promise<SupabaseArticle | null> {
+  try {
+    console.log('Updating article for lesson:', lessonId);
+    
+    const { data, error } = await supabase
+      .from('articles')
+      .update({ content })
+      .eq('lesson', lessonId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Supabase error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
+      throw error;
+    }
+
+    if (data) {
+      // Process any images in the content
+      data.content = await processArticleContent(data.content);
+    }
+
+    console.log('Article updated:', data);
+    return data;
+  } catch (err) {
+    console.error('Error in updateArticle:', err);
     return null;
   }
 } 

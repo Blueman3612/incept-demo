@@ -18,16 +18,16 @@ const Card: React.FC<CardProps> = ({
   return (
     <div className={`bg-white shadow-md rounded-lg overflow-hidden ${className}`}>
       {title && (
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center px-3 py-2 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">{title}</h3>
           {headerActions && <div>{headerActions}</div>}
         </div>
       )}
-      <div className="px-6 py-4">
+      <div className="px-3 py-2">
         {children}
       </div>
       {footer && (
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
+        <div className="px-3 py-2 bg-gray-50 border-t border-gray-200">
           {footer}
         </div>
       )}
