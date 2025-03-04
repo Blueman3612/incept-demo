@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Question } from '@/types/Question';
 import { questionService } from '@/services/questionService';
 import QuestionCard from './QuestionCard';
 import Button from '@/components/ui/Button';
 import Loader from '@/components/ui/Loader';
+import { ErrorWithMessage } from '@/types/Error';
 
 interface LessonQuestionProps {
   lessonId: string;
@@ -53,7 +54,7 @@ const LessonQuestion: React.FC<LessonQuestionProps> = ({
     }
   };
 
-  const fetchRandomQuestion = async () => {
+  const fetchRandomQuestion = useCallback(async () => {
     setLoading(true);
     setError(null);
     setSelectedAnswer(null);
@@ -66,16 +67,17 @@ const LessonQuestion: React.FC<LessonQuestionProps> = ({
       } else {
         setError(response.error || 'Failed to fetch question');
       }
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+    } catch (err: unknown) {
+      const error = err as ErrorWithMessage;
+      setError(error.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
-  };
+  }, [lessonId]);
 
   useEffect(() => {
     fetchRandomQuestion();
-  }, [lessonId]);
+  }, [fetchRandomQuestion]);
 
   const handleAnswerSelect = (index: number) => {
     setSelectedAnswer(index);

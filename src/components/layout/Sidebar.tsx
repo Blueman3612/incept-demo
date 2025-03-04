@@ -16,6 +16,43 @@ interface Category {
   items: SubCategory[];
 }
 
+// Define the categories and subcategories
+const categories: Category[] = [
+  {
+    title: 'Reading Fundamentals',
+    slug: 'reading-fundamentals',
+    items: [
+      { label: 'Reading Fluency', slug: 'fluency', category: 'reading-fundamentals' },
+      { label: 'Vocabulary Acquisition', slug: 'vocabulary', category: 'reading-fundamentals' },
+      { label: 'Academic Vocabulary', slug: 'academic-vocabulary', category: 'reading-fundamentals' },
+      { label: 'Genre Studies', slug: 'genre-studies', category: 'reading-fundamentals' },
+    ]
+  },
+  {
+    title: 'Reading Comprehension',
+    slug: 'reading-comprehension',
+    items: [
+      { label: 'Main Idea and Supporting Details', slug: 'main-idea', category: 'reading-comprehension' },
+      { label: 'Textual Details', slug: 'textual-details', category: 'reading-comprehension' },
+      { label: 'Text Structure and Organization', slug: 'structure', category: 'reading-comprehension' },
+      { label: 'Integration of Knowledge', slug: 'knowledge-integration', category: 'reading-comprehension' },
+      { label: 'Point of View', slug: 'point-of-view', category: 'reading-comprehension' },
+      { label: 'Character Analysis', slug: 'character-analysis', category: 'reading-comprehension' },
+      { label: 'Theme and Summary', slug: 'theme-summary', category: 'reading-comprehension' },
+      { label: 'Figurative Language', slug: 'figurative-language', category: 'reading-comprehension' },
+    ]
+  },
+  {
+    title: 'Language Conventions',
+    slug: 'language-conventions',
+    items: [
+      { label: 'Grammar and Usage', slug: 'grammar', category: 'language-conventions' },
+      { label: 'Capitalization and Punctuation', slug: 'capitalization', category: 'language-conventions' },
+      { label: 'Language Conventions', slug: 'conventions', category: 'language-conventions' },
+    ]
+  }
+];
+
 const Sidebar: React.FC = () => {
   const pathname = usePathname();
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
@@ -38,43 +75,6 @@ const Sidebar: React.FC = () => {
       }
     }
   }, [pathname]);
-
-  // Define the categories and subcategories from the screenshot
-  const categories: Category[] = [
-    {
-      title: 'Reading Fundamentals',
-      slug: 'reading-fundamentals',
-      items: [
-        { label: 'Reading Fluency', slug: 'fluency', category: 'reading-fundamentals' },
-        { label: 'Vocabulary Acquisition', slug: 'vocabulary', category: 'reading-fundamentals' },
-        { label: 'Academic Vocabulary', slug: 'academic-vocabulary', category: 'reading-fundamentals' },
-        { label: 'Genre Studies', slug: 'genre-studies', category: 'reading-fundamentals' },
-      ]
-    },
-    {
-      title: 'Reading Comprehension',
-      slug: 'reading-comprehension',
-      items: [
-        { label: 'Main Idea and Supporting Details', slug: 'main-idea', category: 'reading-comprehension' },
-        { label: 'Textual Details', slug: 'textual-details', category: 'reading-comprehension' },
-        { label: 'Text Structure and Organization', slug: 'structure', category: 'reading-comprehension' },
-        { label: 'Integration of Knowledge', slug: 'knowledge-integration', category: 'reading-comprehension' },
-        { label: 'Point of View', slug: 'point-of-view', category: 'reading-comprehension' },
-        { label: 'Character Analysis', slug: 'character-analysis', category: 'reading-comprehension' },
-        { label: 'Theme and Summary', slug: 'theme-summary', category: 'reading-comprehension' },
-        { label: 'Figurative Language', slug: 'figurative-language', category: 'reading-comprehension' },
-      ]
-    },
-    {
-      title: 'Language Conventions',
-      slug: 'language-conventions',
-      items: [
-        { label: 'Grammar and Usage', slug: 'grammar', category: 'language-conventions' },
-        { label: 'Capitalization and Punctuation', slug: 'capitalization', category: 'language-conventions' },
-        { label: 'Language Conventions', slug: 'conventions', category: 'language-conventions' },
-      ]
-    }
-  ];
 
   const toggleCategory = (slug: string) => {
     setOpenCategories(prev => ({
