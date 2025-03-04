@@ -2,6 +2,18 @@ import { apiClient } from './apiClient';
 import { ApiResponse, GenerateParams, GradeParams, TagParams } from '@/types/Api';
 import { Question, GeneratedQuestion, GradedQuestion, TaggedQuestion } from '@/types/Question';
 import { supabase } from '@/lib/supabase';
+import { ErrorWithMessage } from '@/types/Error';
+
+interface QuestionMetadata {
+  subject?: string;
+  topic?: string;
+  tags?: string[];
+  [key: string]: unknown;
+}
+
+interface AnswerChoices {
+  [key: string]: string;
+}
 
 export interface SupabaseQuestion {
   id: string;
@@ -9,13 +21,13 @@ export interface SupabaseQuestion {
   prompt: string;
   text: string;
   correct_answer: string;
-  answer_choices: any; // JSONB field
-  wrong_answer_explanations: any; // JSONB field
+  answer_choices: string[] | AnswerChoices;
+  wrong_answer_explanations: string[] | AnswerChoices;
   solution: string;
   full_explanation: string;
   grading_criteria: string;
   difficulty: string;
-  metadata: any;
+  metadata: QuestionMetadata;
   status: string;
   created_at: string;
   updated_at: string;
@@ -139,11 +151,12 @@ class QuestionService {
         success: true,
         data: this.convertSupabaseQuestion(randomQuestion)
       };
-    } catch (err: any) {
-      console.error('Error in getRandomQuestion:', err);
+    } catch (err: unknown) {
+      const error = err as ErrorWithMessage;
+      console.error('Error in getRandomQuestion:', error);
       return {
         success: false,
-        error: err.message || 'An unexpected error occurred'
+        error: error.message || 'An unexpected error occurred'
       };
     }
   }

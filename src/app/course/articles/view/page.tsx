@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import Loader from '@/components/ui/Loader';
 import { articleService } from '@/services/articleService';
 import { Article } from '@/types/Article';
+import { ErrorWithMessage } from '@/types/Error';
 
 export default function ViewArticlesPage() {
   const { articles, addArticle, setLoading, loading, error, setError } = useContent();
@@ -26,8 +27,9 @@ export default function ViewArticlesPage() {
       } else {
         setError(response.error || 'Failed to fetch article');
       }
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+    } catch (err: unknown) {
+      const error = err as ErrorWithMessage;
+      setError(error.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }

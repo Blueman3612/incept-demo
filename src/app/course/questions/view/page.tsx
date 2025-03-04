@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import Loader from '@/components/ui/Loader';
 import { questionService } from '@/services/questionService';
 import { Question } from '@/types/Question';
+import { ErrorWithMessage } from '@/types/Error';
 
 export default function ViewQuestionsPage() {
   const { questions, addQuestion, setLoading, loading, error, setError } = useContent();
@@ -19,7 +20,7 @@ export default function ViewQuestionsPage() {
     setShowAnswer(false);
     
     try {
-      const response = await questionService.getRandomQuestion();
+      const response = await questionService.getRandomQuestion('reading-fundamentals/fluency');
       
       if (response.success && response.data) {
         const question = response.data;
@@ -28,8 +29,9 @@ export default function ViewQuestionsPage() {
       } else {
         setError(response.error || 'Failed to fetch question');
       }
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+    } catch (err: unknown) {
+      const error = err as ErrorWithMessage;
+      setError(error.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
